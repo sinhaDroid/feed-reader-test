@@ -10,10 +10,10 @@
 var allFeeds = [
     {
         name: 'Udacity Blog',
-        url: 'http://blog.udacity.com/feeds/posts/default?alt=rss'
+        url: 'http://blog.udacity.com/feed'
     }, {
         name: 'CSS Tricks',
-        url: 'http://css-tricks.com/feed'
+        url: 'http://feeds.feedburner.com/CssTricks'
     }, {
         name: 'HTML5 Rocks',
         url: 'http://feeds.feedburner.com/html5rocks'
@@ -42,15 +42,18 @@ function init() {
  */
 function loadFeed(id, cb) {
     var feedUrl = allFeeds[id].url,
-        feedName = allFeeds[id].name,
-        feed = new google.feeds.Feed(feedUrl);
+        feedName = allFeeds[id].name;
 
     /* Load the feed using the Google Feed Reader API.
      * Once the feed has been loaded, the callback function
      * is executed.
      */
-    feed.load(function(result) {
-        if (!result.error) {
+    $.ajax({
+        type: "POST",
+        url: 'https://rsstojson.udacity.com/parseFeed',
+        data: JSON.stringify({url: feedUrl}),
+        contentType:"application/json",
+        success: function (result, status){
             /* If loading the feed did not result in an error,
              * get started making the DOM manipulations required
              * to display the feed entries on screen.
@@ -72,11 +75,16 @@ function loadFeed(id, cb) {
             entries.forEach(function(entry) {
                 container.append(entryTemplate(entry));
             });
-        }
 
-        if (cb) {
-            cb();
-        }
+            if (cb) {
+                cb();
+            }
+        }, error: function (result, status, err) {
+            // body...
+            if (cb) {
+                cb();
+            }
+        }, dataType:"json"
     });
 }
 
