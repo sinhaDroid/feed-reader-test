@@ -64,9 +64,7 @@ $(function() {
     // Avoid duplicated setup
     // Before loading feed
     beforeEach(function(done) {
-      loadFeed(0, function() {
-        done();
-      });
+      loadFeed(0, done);
     });
 
     // Load "loadFeed" function is called and completes it, and there
@@ -74,7 +72,6 @@ $(function() {
     it("has at least 1 entry after loadFeed function is called", function(done) {
       var numEntries = document.querySelector(".feed").getElementsByClassName("entry").length;
       expect(numEntries).toBeGreaterThan(0);
-      done();
     });
 
     // Make sure each (.feed .entry-link) element has valid link
